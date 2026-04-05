@@ -201,8 +201,13 @@ header::after {
 }
 
 /* ========= INPUT ========= */
+.area-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 .area-input {
-  width: 100%;
+  flex: 1;
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
@@ -214,6 +219,35 @@ header::after {
   outline: none;
 }
 .area-input:focus { border-color: var(--navy); background: #fff; }
+
+.mic-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--off-white);
+  color: var(--navy);
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.mic-btn:hover {
+  background: var(--gold-pale);
+  border-color: var(--gold);
+}
+.mic-btn.recording {
+  background: #ffe0e0;
+  border-color: #e53935;
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(229,57,53,0); }
+}
 .input-hint {
   font-size: 0.72rem;
   color: var(--text-sub);
@@ -421,33 +455,63 @@ header::after {
 /* ========= PAYWALL ========= */
 .paywall-wrap {
   display: none;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid var(--border);
-  padding: 32px 24px;
+  background: linear-gradient(160deg, var(--navy-dark) 0%, #1e3060 60%, #253870 100%);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(10,20,60,0.45);
+  border: 1px solid rgba(208,169,0,0.25);
+  padding: 36px 26px 30px;
   text-align: center;
   margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
 }
-.paywall-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.paywall-wrap::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(208,169,0,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.paywall-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+}
+.paywall-icon {
+  font-size: 2.8rem;
+  margin-bottom: 14px;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(208,169,0,0.4));
+}
 .paywall-title {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 8px;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.paywall-title-sub {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: block;
 }
 .paywall-desc {
-  font-size: 0.82rem;
-  color: var(--text-sub);
-  line-height: 1.7;
-  margin-bottom: 20px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.8;
+  margin-bottom: 22px;
 }
 .stripe-btn {
   display: block;
   width: 100%;
-  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  background: linear-gradient(135deg, var(--navy-light), #3a5ca8);
   color: #fff;
-  border: none;
+  border: 1.5px solid rgba(255,255,255,0.2);
   border-radius: 12px;
   padding: 16px;
   font-size: 1rem;
@@ -455,40 +519,78 @@ header::after {
   cursor: pointer;
   font-family: 'Noto Sans JP', sans-serif;
   text-decoration: none;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 14px rgba(34,54,112,0.3);
+  margin-bottom: 20px;
+  box-shadow: 0 4px 18px rgba(10,20,60,0.4);
+  transition: all 0.2s;
+  letter-spacing: 0.04em;
 }
-.pw-section { margin-top: 16px; }
+.stripe-btn:hover {
+  background: linear-gradient(135deg, #3a5ca8, #4a6cc8);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(10,20,60,0.5);
+}
+.pw-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pw-divider::before, .pw-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+}
+.pw-divider span {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+}
+.pw-section { margin-top: 0; }
 .pw-label {
-  font-size: 0.8rem;
-  color: var(--text-sub);
-  margin-bottom: 8px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 10px;
 }
 .pw-row { display: flex; gap: 8px; }
 .pw-input {
   flex: 1;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid rgba(255,255,255,0.18);
   border-radius: 10px;
-  padding: 11px 12px;
+  padding: 13px 14px;
   font-size: 0.9rem;
   font-family: 'Noto Sans JP', sans-serif;
   outline: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  transition: border-color 0.2s;
 }
-.pw-input:focus { border-color: var(--navy); }
+.pw-input::placeholder { color: rgba(255,255,255,0.3); }
+.pw-input:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.12);
+}
 .pw-submit {
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
   color: var(--navy-dark);
   border: none;
   border-radius: 10px;
-  padding: 11px 18px;
+  padding: 13px 20px;
   font-weight: 700;
   cursor: pointer;
   font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(208,169,0,0.35);
+}
+.pw-submit:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  transform: translateY(-1px);
 }
 .pw-error {
-  color: #c0392b;
-  font-size: 0.78rem;
-  margin-top: 6px;
+  color: #ff8a80;
+  font-size: 0.76rem;
+  margin-top: 8px;
   display: none;
 }
 
@@ -545,20 +647,22 @@ footer a { color: var(--navy); text-decoration: none; }
 
   <!-- PAYWALL -->
   <div class="paywall-wrap" id="paywallWrap">
-    <div class="paywall-icon">🔒</div>
-    <div class="paywall-title" id="pwTitle">無料診断3回を使い切りました</div>
+    <span class="paywall-icon">🏠🔑</span>
+    <div class="paywall-title" id="pwTitle">ご利用にはパスワードが必要です</div>
+    <span class="paywall-title-sub">物件みっけ</span>
     <div class="paywall-desc" id="pwDesc">
       物件みっけは月額2,980円のサービスです。<br>
       ご購入後にパスワードをお届けします。
     </div>
-    <a href="YOUR_STRIPE_URL" class="stripe-btn" id="pwStripeBtn">
-      🔑 安全なStripeで購入する（月額2,980円）
+    <a href="https://buy.stripe.com/dRm7sK8qK1ENelhbRacV20p" class="stripe-btn" id="pwStripeBtn" target="_blank">
+      🔒 安全なStripeで購入する（月額2,980円）
     </a>
+    <div class="pw-divider"><span>すでにパスワードをお持ちの方</span></div>
     <div class="pw-section">
-      <div class="pw-label" id="pwLabel">すでにパスワードをお持ちの方</div>
+      <div class="pw-label" id="pwLabel">パスワードを入力してください</div>
       <div class="pw-row">
         <input type="password" class="pw-input" id="pwInput" placeholder="パスワードを入力">
-        <button class="pw-submit" onclick="checkPassword()" id="pwBtn">入室</button>
+        <button class="pw-submit" onclick="checkPassword()" id="pwBtn">入室する</button>
       </div>
       <div class="pw-error" id="pwError">パスワードが違います</div>
     </div>
@@ -592,9 +696,12 @@ footer a { color: var(--navy); text-decoration: none; }
       <div class="step-title" id="s2Title">📍 エリアを入力する</div>
       <div class="step-note" id="s2Note">任意・入力で精度UP</div>
     </div>
-    <input type="text" class="area-input" id="areaInput"
-      placeholder="例：大阪市北区、渋谷区、名古屋市中区…">
-    <div class="input-hint" id="s2Hint">※ 入力しなくても診断できます。エリアを入れると価格精度が上がります。</div>
+    <div class="area-input-wrap">
+      <input type="text" class="area-input" id="areaInput"
+        placeholder="例：大阪市北区、渋谷区、名古屋市中区…">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="音声入力">🎙️</button>
+    </div>
+    <div class="input-hint" id="s2Hint">※ 🎙️ をタップして話しかけると音声入力できます。エリアを入れると価格精度が上がります。</div>
   </div>
 
   <!-- STEP 3: PROPERTY TYPE -->
@@ -708,8 +815,8 @@ footer a { color: var(--navy); text-decoration: none; }
 // ============================================================
 //  設定
 // ============================================================
-const WORKER_URL = 'https://bukken-mikke.yymmatsu.workers.dev';
-const CORRECT_PW   = 'YOUR_PASSWORD_HERE';
+const WORKER_URL   = 'https://yymmatsu.workers.dev/bukken-mikke';
+const CORRECT_PW   = 'bukken2025';
 const STRIPE_URL   = 'YOUR_STRIPE_URL';
 const FREE_LIMIT   = 3;
 const STORAGE_KEY  = 'bukken_mikke_count';
@@ -1120,6 +1227,53 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+//  音声入力
+// ============================================================
+let recognition = null;
+let isRecording = false;
+
+function toggleVoice() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('お使いのブラウザは音声入力に対応していません');
+    return;
+  }
+  if (isRecording) {
+    recognition.stop();
+    return;
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = currentLang === 'en' ? 'en-US' : currentLang === 'zh' ? 'zh-CN' : 'ja-JP';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('micBtn').textContent = '⏹️';
+    showToast('🎙️ 話しかけてください…');
+  };
+
+  recognition.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    document.getElementById('areaInput').value = text;
+    showToast('✅ 入力しました：' + text);
+  };
+
+  recognition.onerror = (e) => {
+    showToast('音声を認識できませんでした。もう一度お試しください。');
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    document.getElementById('micBtn').classList.remove('recording');
+    document.getElementById('micBtn').textContent = '🎙️';
+  };
+
+  recognition.start();
 }
 </script>
 </body>
