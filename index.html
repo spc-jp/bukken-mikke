@@ -52,7 +52,7 @@ body {
 /* ========= HEADER ========= */
 header {
   background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-light) 100%);
-  padding: 28px 20px 24px;
+  padding: 28px 20px 30px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -101,25 +101,35 @@ header::after {
   display: flex;
   justify-content: center;
   gap: 8px;
-  padding: 14px 16px 10px;
-  background: var(--navy-dark);
+  margin-top: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 .lang-btn {
   background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.7);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 0.78rem;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.85);
+  border-radius: 24px;
+  padding: 7px 18px;
+  font-size: 0.82rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.22s;
   font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+}
+.lang-btn:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.45);
+  color: #fff;
 }
 .lang-btn.active {
   background: var(--gold);
-  border-color: var(--gold);
+  border-color: var(--gold-light);
   color: var(--navy-dark);
   font-weight: 700;
+  box-shadow: 0 2px 10px rgba(208,169,0,0.35);
 }
 
 /* ========= MAIN WRAPPER ========= */
@@ -651,15 +661,14 @@ footer a { color: var(--navy); text-decoration: none; }
 <header>
   <span class="header-icon">🏠</span>
   <div class="header-title">物件<span>みっけ</span></div>
-  <div class="header-sub">写真で調べるAI不動産診断 ／ AI Property Analyzer ／ AI房产分析</div>
+  <div class="header-sub">写真1枚で不動産AI診断</div>
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('ja')">🇯🇵 日本語</button>
+    <button class="lang-btn" onclick="setLang('en')">🇺🇸 English</button>
+    <button class="lang-btn" onclick="setLang('zh')">🇨🇳 中文</button>
+    <button class="lang-btn" onclick="setLang('ko')">🇰🇷 한국어</button>
+  </div>
 </header>
-
-<!-- LANGUAGE BAR -->
-<div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('ja')">🇯🇵 日本語</button>
-  <button class="lang-btn" onclick="setLang('en')">🇺🇸 English</button>
-  <button class="lang-btn" onclick="setLang('zh')">🇨🇳 中文</button>
-</div>
 
 <div class="main">
 
@@ -927,6 +936,34 @@ const I18N = {
     toastNoType:'请选择物业类型 🏠',
     areaPlaceholder:'例：大阪市北区、涩谷区、名古屋市中区…',
     promptLang:'中文（简体）'
+  },
+  ko: {
+    s1Title:'📸 사진 선택', s1Note:'외관·실내 모두 OK',
+    uploadStrong:'여기를 탭하여 사진 선택',
+    uploadSub:'아파트·단독주택·상업시설·토지 모두 OK',
+    s2Title:'📍 지역 입력', s2Note:'선택사항·입력 시 정확도 향상',
+    s2Hint:'입력하지 않아도 진단할 수 있습니다. 지역을 입력하면 가격 정확도가 올라갑니다.',
+    s3Title:'🏗️ 부동산 유형 선택', s3Note:'해당하는 것을 탭',
+    analyzeBtnText:'🔍 이 부동산을 진단하기',
+    freeBadgeText:'이후 월 2,980엔',
+    loadingText:'🏠 사진을 분석 중입니다…<br>잠시만 기다려 주세요',
+    resultHeaderText:'AI 진단 결과',
+    resultHeaderSub:'※참고 정보입니다. 정확한 감정은 전문가에게',
+    lbl1:'부동산 유형 추정', lbl2:'규모·구조 추정',
+    lbl3:'건축 연수 목안', lbl4:'참고 가격대（AI 추정）',
+    lbl5:'종합 코멘트',
+    disclaimerText:'※ 이 진단은 AI에 의한 참고 정보입니다. 실제 매매·임대 가격은 시장 상황에 따라 다릅니다. 정확한 감정은 부동산 전문가에게 상담하세요.',
+    copyBtn:'📋 복사', resetBtn:'🔄 다른 부동산 조사',
+    pwTitle:'무료 진단 3회를 모두 사용했습니다',
+    pwDesc:'물건みっけ는 월 2,980엔 서비스입니다.\n구매 후 비밀번호를 보내드립니다.',
+    pwStripeBtn:'🔑 Stripe로 구독（월 2,980엔）',
+    pwLabel:'이미 비밀번호가 있으신가요？',
+    pwBtn:'입장',
+    toastCopied:'복사되었습니다！',
+    toastNoPhoto:'사진을 선택해 주세요 📸',
+    toastNoType:'부동산 유형을 선택해 주세요 🏠',
+    areaPlaceholder:'예：오사카시 기타구、시부야구、나고야시 중구…',
+    promptLang:'한국어'
   }
 };
 
@@ -953,7 +990,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('.lang-btn').forEach((b,i) => {
-    b.classList.toggle('active', ['ja','en','zh'][i] === lang);
+    b.classList.toggle('active', ['ja','en','zh','ko'][i] === lang);
   });
   applyLang(lang);
 }
@@ -1264,7 +1301,7 @@ function toggleVoice() {
   }
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechRecognition();
-  recognition.lang = currentLang === 'en' ? 'en-US' : currentLang === 'zh' ? 'zh-CN' : 'ja-JP';
+  recognition.lang = currentLang === 'en' ? 'en-US' : currentLang === 'zh' ? 'zh-CN' : currentLang === 'ko' ? 'ko-KR' : 'ja-JP';
   recognition.continuous = false;
   recognition.interimResults = false;
 
