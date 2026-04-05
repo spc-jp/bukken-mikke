@@ -360,25 +360,107 @@ header::after {
   font-size: 0.75rem;
 }
 
-/* ========= LOADING ========= */
+/* ========= LOADING（A案：スキャンライン） ========= */
 .loading-wrap {
   display: none;
-  text-align: center;
-  padding: 40px 20px;
+  padding: 24px 16px 32px;
 }
-.loading-spinner {
-  width: 44px; height: 44px;
-  border: 3px solid var(--border);
-  border-top-color: var(--navy);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-  margin: 0 auto 16px;
+.scan-box {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--navy-dark);
+  border: 1.5px solid rgba(208,169,0,0.3);
+  margin-bottom: 20px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text {
-  font-size: 0.88rem;
+.scan-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.scan-building {
+  font-size: 3.5rem;
+  position: relative;
+  z-index: 2;
+  animation: buildingPulse 1.8s ease-in-out infinite;
+}
+@keyframes buildingPulse {
+  0%,100% { filter: brightness(1); transform: scale(1); }
+  50% { filter: brightness(1.4) drop-shadow(0 0 12px rgba(208,169,0,0.8)); transform: scale(1.05); }
+}
+.scan-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), rgba(255,255,255,0.9), var(--gold), transparent);
+  box-shadow: 0 0 12px rgba(208,169,0,0.8), 0 0 24px rgba(208,169,0,0.4);
+  animation: scanDown 1.8s ease-in-out infinite;
+  z-index: 3;
+}
+@keyframes scanDown {
+  0%   { top: 0%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.scan-corner {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-color: var(--gold);
+  border-style: solid;
+  z-index: 4;
+}
+.scan-corner.tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+.scan-corner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+.scan-corner.bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+.scan-corner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+.scan-status { text-align: center; }
+.scan-label {
+  font-size: 0.82rem;
+  color: var(--navy);
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 0.06em;
+}
+.scan-steps {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.scan-step {
+  font-size: 0.7rem;
   color: var(--text-sub);
-  line-height: 1.7;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 10px;
+  transition: all 0.4s;
+}
+.scan-step.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.scan-step.done { background: var(--gold-pale); color: var(--navy); border-color: var(--gold); }
+.scan-bar-wrap {
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.scan-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--navy), var(--gold));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.5s ease;
 }
 
 /* ========= RESULT CARD ========= */
@@ -411,9 +493,17 @@ header::after {
 }
 .result-body { padding: 20px; }
 
+/* D案：結果ブロック フェードイン */
 .result-block {
   border-bottom: 1px solid var(--border);
   padding: 14px 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.result-block.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 .result-block:last-child { border-bottom: none; }
 .result-block-label {
@@ -774,9 +864,26 @@ footer a { color: var(--navy); text-decoration: none; }
 
   <!-- LOADING -->
   <div class="loading-wrap" id="loadingWrap">
-    <div class="loading-spinner"></div>
-    <div class="loading-text" id="loadingText">
-      🏠 写真を解析中です…<br>少々お待ちください
+    <div class="scan-box">
+      <div class="scan-grid"></div>
+      <div class="scan-building">🏢</div>
+      <div class="scan-line"></div>
+      <div class="scan-corner tl"></div>
+      <div class="scan-corner tr"></div>
+      <div class="scan-corner bl"></div>
+      <div class="scan-corner br"></div>
+    </div>
+    <div class="scan-status">
+      <div class="scan-label" id="scanLabel">🔍 AIが写真を解析中です…</div>
+      <div class="scan-steps">
+        <span class="scan-step active" id="scanStep1">📸 写真読取</span>
+        <span class="scan-step" id="scanStep2">🏗️ 構造判定</span>
+        <span class="scan-step" id="scanStep3">📅 築年推定</span>
+        <span class="scan-step" id="scanStep4">💴 価格算出</span>
+      </div>
+      <div class="scan-bar-wrap">
+        <div class="scan-bar" id="scanBar"></div>
+      </div>
     </div>
   </div>
 
@@ -1182,6 +1289,9 @@ JSONのみを返してください。説明文や前置きは不要です。
   document.getElementById('resultWrap').style.display = 'none';
   document.getElementById('loadingWrap').style.display = 'block';
 
+  // A案：スキャンステップアニメーション開始
+  startScanAnimation();
+
   try {
     const res = await fetch(WORKER_URL, {
       method: 'POST',
@@ -1230,11 +1340,16 @@ JSONのみを返してください。説明文や前置きは不要です。
     if (!isUnlocked()) incrementFreeCount();
     updateFreeCount();
 
+    stopScanAnimation();
     document.getElementById('loadingWrap').style.display = 'none';
     document.getElementById('resultWrap').style.display = 'block';
     document.getElementById('resultWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+    // D案：結果ブロックを順番にフェードイン
+    fadeInResultBlocks();
+
   } catch (err) {
+    stopScanAnimation();
     document.getElementById('loadingWrap').style.display = 'none';
     document.getElementById('analyzeSection').style.display = 'block';
     showToast('エラーが発生しました。もう一度お試しください。');
@@ -1267,6 +1382,60 @@ function resetApp() {
   document.getElementById('analyzeSection').style.display = 'block';
   updateFreeCount();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+//  A案：スキャンアニメーション制御
+// ============================================================
+let scanTimer = null;
+let scanStep  = 0;
+const scanSteps = ['scanStep1','scanStep2','scanStep3','scanStep4'];
+const scanBars  = [25, 50, 75, 100];
+
+function startScanAnimation() {
+  scanStep = 0;
+  scanSteps.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+  });
+  document.getElementById('scanBar').style.width = '0%';
+  advanceScanStep();
+  scanTimer = setInterval(advanceScanStep, 1800);
+}
+
+function advanceScanStep() {
+  if (scanStep > 0) {
+    document.getElementById(scanSteps[scanStep - 1]).classList.remove('active');
+    document.getElementById(scanSteps[scanStep - 1]).classList.add('done');
+  }
+  if (scanStep < scanSteps.length) {
+    document.getElementById(scanSteps[scanStep]).classList.add('active');
+    document.getElementById('scanBar').style.width = scanBars[scanStep] + '%';
+    scanStep++;
+  }
+}
+
+function stopScanAnimation() {
+  if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
+  document.getElementById('scanBar').style.width = '100%';
+  scanSteps.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active');
+    el.classList.add('done');
+  });
+}
+
+// ============================================================
+//  D案：結果ブロック フェードイン
+// ============================================================
+function fadeInResultBlocks() {
+  const blocks = document.querySelectorAll('.result-block');
+  blocks.forEach((block, i) => {
+    block.classList.remove('visible');
+    setTimeout(() => {
+      block.classList.add('visible');
+    }, i * 200);
+  });
 }
 
 // ============================================================
