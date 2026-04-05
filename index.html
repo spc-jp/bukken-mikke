@@ -737,11 +737,101 @@ footer a { color: var(--navy); text-decoration: none; }
   transition: all 0.3s;
   z-index: 999;
   pointer-events: none;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 90vw;
+  text-align: center;
 }
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* ========= スマホ横スクロール防止 ========= */
+html {
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ========= メディアクエリ（768px以下） ========= */
+@media (max-width: 768px) {
+  .main {
+    padding: 14px 12px 60px;
+  }
+  .step-card {
+    padding: 16px 14px;
+  }
+  .header-title {
+    font-size: 1.6rem;
+  }
+  .lang-btn {
+    padding: 6px 12px;
+    font-size: 0.74rem;
+  }
+  .type-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .type-btn {
+    padding: 10px 6px;
+  }
+  .type-btn .type-name { font-size: 0.8rem; }
+  .type-btn .type-en { font-size: 0.62rem; }
+  .action-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .copy-btn, .reset-btn {
+    width: 100%;
+  }
+  .pw-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pw-submit {
+    width: 100%;
+    padding: 13px;
+  }
+  .paywall-wrap {
+    padding: 28px 16px 24px;
+  }
+  .stripe-btn {
+    font-size: 0.88rem;
+    padding: 14px 10px;
+    letter-spacing: 0.02em;
+  }
+  .analyze-btn {
+    font-size: 0.95rem;
+    padding: 15px 12px;
+  }
+  .area-input-wrap {
+    gap: 6px;
+  }
+  .mic-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+  .scan-steps {
+    gap: 4px;
+  }
+  .scan-step {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+  .result-block-label {
+    font-size: 0.68rem;
+  }
+  .price-value {
+    font-size: 1.2rem;
+  }
 }
 </style>
 </head>
